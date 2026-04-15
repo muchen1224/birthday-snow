@@ -94,6 +94,7 @@
       padding: 24px;
       background: radial-gradient(circle at center, rgba(255, 245, 249, 0.12), rgba(20, 33, 61, 0.9) 65%);
       transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
     }
 
     .intro.hidden {
@@ -104,15 +105,38 @@
     .intro-text {
       margin: 0;
       text-align: center;
-      font-size: clamp(30px, 10vw, 56px);
-      line-height: 1.3;
-      font-weight: 700;
-      letter-spacing: 0.06em;
+      font-size: clamp(38px, 12vw, 72px);
+      line-height: 1.22;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       color: #fff7fb;
-      text-shadow: 0 0 28px rgba(255, 232, 242, 0.42);
+      text-shadow: 0 0 28px rgba(255, 232, 242, 0.42), 0 0 60px rgba(255, 240, 247, 0.28);
       opacity: 0;
       transform: scale(0.9);
-      animation: introPop 1.2s ease forwards;
+      animation: introPop 1.5s ease forwards;
+      position: relative;
+      z-index: 2;
+    }
+
+    .intro-glow {
+      position: absolute;
+      width: 58vw;
+      height: 58vw;
+      max-width: 420px;
+      max-height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 239, 246, 0.42) 0%, rgba(255, 239, 246, 0.08) 38%, rgba(255, 239, 246, 0) 72%);
+      filter: blur(12px);
+      animation: haloPulse 2.8s ease-in-out infinite;
+      opacity: 0.95;
+    }
+
+    .intro-flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 18%, rgba(255, 255, 255, 0) 48%);
+      opacity: 0;
+      animation: introFlash 1.6s ease-out 0.45s forwards;
     }
 
     .content {
@@ -236,12 +260,37 @@
         transform: scale(1) translateY(0);
       }
     }
+
+    @keyframes haloPulse {
+      0%, 100% {
+        transform: scale(0.92);
+        opacity: 0.82;
+      }
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    @keyframes introFlash {
+      0% {
+        opacity: 0;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="aurora"></div>
   <canvas id="snow"></canvas>
   <section class="intro" id="intro">
+    <div class="intro-flash"></div>
+    <div class="intro-glow"></div>
     <h1 class="intro-text">谢淑褀，生日快乐！！！</h1>
   </section>
 
@@ -282,7 +331,7 @@
       canvas.style.height = height + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.max(90, Math.floor(width * height / 7000));
+      const count = Math.max(130, Math.floor(width * height / 5200));
       flakes = Array.from({ length: count }, createFlake);
     }
 
@@ -294,9 +343,9 @@
       return {
         x: random(0, width),
         y: random(-height, height),
-        r: random(1.2, 4.6),
-        speedY: random(0.45, 1.8),
-        speedX: random(-0.35, 0.35),
+        r: random(1.1, 4.8),
+        speedY: random(0.55, 2.1),
+        speedX: random(-0.45, 0.45),
         wobble: random(0.005, 0.02),
         alpha: random(0.45, 0.95),
         blur: random(0, 1),
@@ -371,7 +420,7 @@
       snowStarted = true;
       document.body.classList.add("stage-card");
       intro.classList.add("hidden");
-    }, 1800);
+    }, 2600);
     window.addEventListener("resize", resize);
     window.addEventListener("orientationchange", resize);
   </script>
