@@ -172,7 +172,7 @@
       height: 57%;
       border-radius: 24px;
       overflow: hidden;
-      opacity: 0.12;
+      opacity: 0.18;
       pointer-events: none;
     }
 
@@ -190,8 +190,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(255, 248, 239, 0.95) 0%, rgba(255, 248, 239, 0.72) 36%, rgba(255, 248, 239, 0.92) 100%),
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.48));
+        linear-gradient(180deg, rgba(255, 248, 239, 0.86) 0%, rgba(255, 248, 239, 0.5) 36%, rgba(255, 248, 239, 0.82) 100%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.34));
     }
 
     .photo-caption {
@@ -379,6 +379,7 @@
     let audioContext = null;
     let masterGain = null;
     let isMusicPlaying = false;
+    let autoPlayTried = false;
     let melodyTimer = null;
     let chordTimer = null;
 
@@ -515,44 +516,47 @@
     }
 
     function ensureAudio() {
-      if (audioContext) return;
+      if (audioContext) return true;
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-
+      if (!AudioCtx) return false;
       audioContext = new AudioCtx();
       masterGain = audioContext.createGain();
-      masterGain.gain.value = 0.05;
+      masterGain.gain.value = 0.04;
       masterGain.connect(audioContext.destination);
+      return true;
     }
 
     function playTone(frequency, startTime, duration, type, volume) {
       if (!audioContext || !masterGain) return;
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
+
       oscillator.type = type;
       oscillator.frequency.setValueAtTime(frequency, startTime);
+
       gainNode.gain.setValueAtTime(0.0001, startTime);
-      gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.08);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
       oscillator.connect(gainNode);
       gainNode.connect(masterGain);
       oscillator.start(startTime);
-      oscillator.stop(startTime + duration + 0.06);
+      oscillator.stop(startTime + duration + 0.1);
     }
 
     function scheduleMelody() {
       if (!audioContext || !isMusicPlaying) return;
       const now = audioContext.currentTime + 0.05;
       const notes = [
-        523.25, 659.25, 783.99, 659.25,
-        698.46, 783.99, 880.0, 783.99
+        659.25, 783.99, 880.0, 783.99,
+        698.46, 659.25, 587.33, 659.25
       ];
 
       notes.forEach((note, index) => {
-        playTone(note, now + index * 0.42, 0.36, "sine", 0.045);
+        playTone(note, now + index * 0.48, 0.38, "sine", 0.032);
       });
 
-      melodyTimer = window.setTimeout(scheduleMelody, notes.length * 420);
+      melodyTimer = window.setTimeout(scheduleMelody, notes.length * 480);
     }
 
     function scheduleChords() {
@@ -560,22 +564,22 @@
       const now = audioContext.currentTime + 0.05;
       const chords = [
         [261.63, 329.63, 392.0],
-        [293.66, 369.99, 440.0],
-        [329.63, 415.3, 493.88],
-        [293.66, 369.99, 440.0]
+        [220.0, 329.63, 392.0],
+        [246.94, 329.63, 440.0],
+        [196.0, 293.66, 392.0]
       ];
 
       chords.forEach((chord, index) => {
-        const start = now + index * 1.68;
-        chord.forEach((note) => playTone(note, start, 1.2, "triangle", 0.018));
+        const start = now + index * 1.92;
+        chord.forEach((note) => playTone(note, start, 1.5, "triangle", 0.014));
       });
 
-      chordTimer = window.setTimeout(scheduleChords, chords.length * 1680);
+      chordTimer = window.setTimeout(scheduleChords, chords.length * 1920);
     }
 
     async function startMusic() {
-      ensureAudio();
-      if (!audioContext || !masterGain || isMusicPlaying) return;
+      if (isMusicPlaying) return;
+      if (!ensureAudio()) return;
       if (audioContext.state === "suspended") {
         await audioContext.resume();
       }
@@ -615,8 +619,10 @@
     }, 2600);
     updateMusicButton();
     musicToggle.addEventListener("click", toggleMusic);
-    document.addEventListener("pointerdown", () => {
-      if (!isMusicPlaying) {
+    document.addEventListener("pointerdown", (event) => {
+      if (event.target === musicToggle) return;
+      if (!isMusicPlaying && !autoPlayTried) {
+        autoPlayTried = true;
         startMusic();
       }
     }, { once: true });
