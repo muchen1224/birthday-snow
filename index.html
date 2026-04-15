@@ -172,7 +172,7 @@
       height: 62%;
       border-radius: 24px;
       overflow: hidden;
-      opacity: 0.3;
+      opacity: 0.42;
       pointer-events: none;
     }
 
@@ -190,8 +190,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(255, 248, 239, 0.74) 0%, rgba(255, 248, 239, 0.28) 36%, rgba(255, 248, 239, 0.68) 100%),
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.24));
+        linear-gradient(180deg, rgba(255, 248, 239, 0.56) 0%, rgba(255, 248, 239, 0.14) 36%, rgba(255, 248, 239, 0.48) 100%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.16));
     }
 
     .photo-caption {
@@ -240,22 +240,7 @@
       z-index: 1;
     }
 
-    .hint {
-      position: fixed;
-      right: 18px;
-      bottom: calc(env(safe-area-inset-bottom) + 14px);
-      z-index: 3;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: rgba(105, 78, 60, 0.88);
-      background: rgba(255, 249, 238, 0.42);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      animation: pulse 2.4s ease-in-out infinite;
-      cursor: pointer;
-      user-select: none;
-    }
+    .hint { display: none; }
 
     body.stage-card .card {
       animation: rise 1.2s ease both;
@@ -363,13 +348,10 @@
     </section>
   </main>
 
-  <button class="hint" id="musicToggle" type="button" aria-label="播放背景音乐">打开音乐</button>
-
   <script>
     const canvas = document.getElementById("dandelion");
     const ctx = canvas.getContext("2d");
     const intro = document.getElementById("intro");
-    const musicToggle = document.getElementById("musicToggle");
 
     let width = 0;
     let height = 0;
@@ -510,11 +492,6 @@
       }
     }
 
-    function updateMusicButton() {
-      musicToggle.textContent = isMusicPlaying ? "暂停音乐" : "打开音乐";
-      musicToggle.setAttribute("aria-label", isMusicPlaying ? "暂停背景音乐" : "播放背景音乐");
-    }
-
     function ensureAudio() {
       if (audioContext) return true;
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -595,7 +572,6 @@
       playIntroCue();
       scheduleMelody();
       scheduleChords();
-      updateMusicButton();
     }
 
     function stopMusic() {
@@ -608,15 +584,6 @@
         window.clearTimeout(chordTimer);
         chordTimer = null;
       }
-      updateMusicButton();
-    }
-
-    async function toggleMusic() {
-      if (isMusicPlaying) {
-        stopMusic();
-      } else {
-        await startMusic();
-      }
     }
 
     resize();
@@ -626,10 +593,25 @@
       document.body.classList.add("stage-card");
       intro.classList.add("hidden");
     }, 2600);
-    updateMusicButton();
-    musicToggle.addEventListener("click", toggleMusic);
-    document.addEventListener("pointerdown", (event) => {
-      if (event.target === musicToggle) return;
+    window.addEventListener("load", () => {
+      startMusic();
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      startMusic();
+    });
+    document.addEventListener("WeixinJSBridgeReady", () => {
+      startMusic();
+    });
+    document.addEventListener("YixinJSBridgeReady", () => {
+      startMusic();
+    });
+    document.addEventListener("pointerdown", () => {
+      if (!isMusicPlaying && !autoPlayTried) {
+        autoPlayTried = true;
+        startMusic();
+      }
+    }, { once: true });
+    document.addEventListener("touchstart", () => {
       if (!isMusicPlaying && !autoPlayTried) {
         autoPlayTried = true;
         startMusic();
