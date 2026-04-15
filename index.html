@@ -154,7 +154,7 @@
 
     .card {
       width: min(92vw, 450px);
-      padding: 124px 24px 30px;
+      padding: 132px 24px 30px;
       border-radius: 28px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 250, 240, 0.22));
       border: 1px solid rgba(255, 255, 255, 0.34);
@@ -169,14 +169,15 @@
     .photo-frame {
       position: absolute;
       left: 50%;
-      top: -70px;
+      top: -82px;
       transform: translateX(-50%) rotate(-2deg);
       width: min(62vw, 220px);
       padding: 10px 10px 18px;
       border-radius: 26px;
-      background: rgba(255, 252, 246, 0.92);
-      border: 1px solid rgba(255, 255, 255, 0.76);
-      box-shadow: 0 16px 40px rgba(146, 112, 87, 0.22);
+      background: rgba(255, 252, 246, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      box-shadow: 0 14px 34px rgba(146, 112, 87, 0.16);
+      backdrop-filter: blur(4px);
     }
 
     .photo-frame::before {
@@ -197,6 +198,7 @@
       object-position: center center;
       border-radius: 18px;
       box-shadow: 0 10px 22px rgba(85, 67, 57, 0.12);
+      opacity: 0.82;
     }
 
     .photo-note {
@@ -204,11 +206,11 @@
       font-size: 12px;
       letter-spacing: 0.2em;
       text-indent: 0.2em;
-      color: rgba(143, 105, 112, 0.82);
+      color: rgba(143, 105, 112, 0.72);
     }
 
     .photo-caption {
-      margin: 12px 0 4px;
+      margin: 18px 0 4px;
       font-size: 13px;
       color: rgba(131, 95, 101, 0.84);
     }
