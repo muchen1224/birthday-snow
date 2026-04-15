@@ -169,10 +169,10 @@
     .photo-backdrop {
       position: absolute;
       inset: 18px 18px auto;
-      height: 57%;
+      height: 62%;
       border-radius: 24px;
       overflow: hidden;
-      opacity: 0.18;
+      opacity: 0.3;
       pointer-events: none;
     }
 
@@ -181,8 +181,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 22%;
-      filter: blur(0.5px) saturate(0.92);
+      object-position: center 28%;
+      filter: saturate(0.96) contrast(1.02);
     }
 
     .photo-backdrop::after {
@@ -190,8 +190,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(255, 248, 239, 0.86) 0%, rgba(255, 248, 239, 0.5) 36%, rgba(255, 248, 239, 0.82) 100%),
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.34));
+        linear-gradient(180deg, rgba(255, 248, 239, 0.74) 0%, rgba(255, 248, 239, 0.28) 36%, rgba(255, 248, 239, 0.68) 100%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.24));
     }
 
     .photo-caption {
@@ -521,7 +521,7 @@
       if (!AudioCtx) return false;
       audioContext = new AudioCtx();
       masterGain = audioContext.createGain();
-      masterGain.gain.value = 0.04;
+      masterGain.gain.value = 0.11;
       masterGain.connect(audioContext.destination);
       return true;
     }
@@ -553,7 +553,7 @@
       ];
 
       notes.forEach((note, index) => {
-        playTone(note, now + index * 0.48, 0.38, "sine", 0.032);
+        playTone(note, now + index * 0.48, 0.42, "triangle", 0.07);
       });
 
       melodyTimer = window.setTimeout(scheduleMelody, notes.length * 480);
@@ -571,10 +571,18 @@
 
       chords.forEach((chord, index) => {
         const start = now + index * 1.92;
-        chord.forEach((note) => playTone(note, start, 1.5, "triangle", 0.014));
+        chord.forEach((note) => playTone(note, start, 1.6, "sine", 0.028));
       });
 
       chordTimer = window.setTimeout(scheduleChords, chords.length * 1920);
+    }
+
+    function playIntroCue() {
+      if (!audioContext) return;
+      const now = audioContext.currentTime + 0.02;
+      [523.25, 659.25, 783.99].forEach((note, index) => {
+        playTone(note, now + index * 0.12, 0.55, "triangle", 0.085);
+      });
     }
 
     async function startMusic() {
@@ -584,6 +592,7 @@
         await audioContext.resume();
       }
       isMusicPlaying = true;
+      playIntroCue();
       scheduleMelody();
       scheduleChords();
       updateMusicButton();
