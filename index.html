@@ -172,7 +172,7 @@
       height: 57%;
       border-radius: 24px;
       overflow: hidden;
-      opacity: 0.12;
+      opacity: 0.18;
       pointer-events: none;
     }
 
@@ -190,8 +190,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(180deg, rgba(255, 248, 239, 0.95) 0%, rgba(255, 248, 239, 0.72) 36%, rgba(255, 248, 239, 0.92) 100%),
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.48));
+        linear-gradient(180deg, rgba(255, 248, 239, 0.86) 0%, rgba(255, 248, 239, 0.5) 36%, rgba(255, 248, 239, 0.82) 100%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.34));
     }
 
     .photo-caption {
@@ -363,6 +363,9 @@
     </section>
   </main>
 
+  <audio id="bgm" loop preload="auto">
+    <source src="assets/bgm.mp3" type="audio/mpeg">
+  </audio>
   <button class="hint" id="musicToggle" type="button" aria-label="播放背景音乐">打开音乐</button>
 
   <script>
@@ -370,17 +373,15 @@
     const ctx = canvas.getContext("2d");
     const intro = document.getElementById("intro");
     const musicToggle = document.getElementById("musicToggle");
+    const bgm = document.getElementById("bgm");
 
     let width = 0;
     let height = 0;
     let seeds = [];
     let sparkleOffset = 0;
     let floatStarted = false;
-    let audioContext = null;
-    let masterGain = null;
     let isMusicPlaying = false;
-    let melodyTimer = null;
-    let chordTimer = null;
+    let autoPlayTried = false;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -514,87 +515,25 @@
       musicToggle.setAttribute("aria-label", isMusicPlaying ? "暂停背景音乐" : "播放背景音乐");
     }
 
-    function ensureAudio() {
-      if (audioContext) return;
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-
-      audioContext = new AudioCtx();
-      masterGain = audioContext.createGain();
-      masterGain.gain.value = 0.05;
-      masterGain.connect(audioContext.destination);
-    }
-
-    function playTone(frequency, startTime, duration, type, volume) {
-      if (!audioContext || !masterGain) return;
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      oscillator.type = type;
-      oscillator.frequency.setValueAtTime(frequency, startTime);
-      gainNode.gain.setValueAtTime(0.0001, startTime);
-      gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-      oscillator.connect(gainNode);
-      gainNode.connect(masterGain);
-      oscillator.start(startTime);
-      oscillator.stop(startTime + duration + 0.06);
-    }
-
-    function scheduleMelody() {
-      if (!audioContext || !isMusicPlaying) return;
-      const now = audioContext.currentTime + 0.05;
-      const notes = [
-        523.25, 659.25, 783.99, 659.25,
-        698.46, 783.99, 880.0, 783.99
-      ];
-
-      notes.forEach((note, index) => {
-        playTone(note, now + index * 0.42, 0.36, "sine", 0.045);
-      });
-
-      melodyTimer = window.setTimeout(scheduleMelody, notes.length * 420);
-    }
-
-    function scheduleChords() {
-      if (!audioContext || !isMusicPlaying) return;
-      const now = audioContext.currentTime + 0.05;
-      const chords = [
-        [261.63, 329.63, 392.0],
-        [293.66, 369.99, 440.0],
-        [329.63, 415.3, 493.88],
-        [293.66, 369.99, 440.0]
-      ];
-
-      chords.forEach((chord, index) => {
-        const start = now + index * 1.68;
-        chord.forEach((note) => playTone(note, start, 1.2, "triangle", 0.018));
-      });
-
-      chordTimer = window.setTimeout(scheduleChords, chords.length * 1680);
-    }
-
     async function startMusic() {
-      ensureAudio();
-      if (!audioContext || !masterGain || isMusicPlaying) return;
-      if (audioContext.state === "suspended") {
-        await audioContext.resume();
+      if (isMusicPlaying) return;
+      if (!bgm || !bgm.querySelector("source") || !bgm.querySelector("source").getAttribute("src")) return;
+      try {
+        bgm.volume = 0.45;
+        await bgm.play();
+        isMusicPlaying = true;
+        updateMusicButton();
+      } catch (error) {
+        isMusicPlaying = false;
+        updateMusicButton();
       }
-      isMusicPlaying = true;
-      scheduleMelody();
-      scheduleChords();
-      updateMusicButton();
     }
 
     function stopMusic() {
+      if (!bgm) return;
+      bgm.pause();
+      bgm.currentTime = bgm.currentTime || 0;
       isMusicPlaying = false;
-      if (melodyTimer) {
-        window.clearTimeout(melodyTimer);
-        melodyTimer = null;
-      }
-      if (chordTimer) {
-        window.clearTimeout(chordTimer);
-        chordTimer = null;
-      }
       updateMusicButton();
     }
 
@@ -616,10 +555,19 @@
     updateMusicButton();
     musicToggle.addEventListener("click", toggleMusic);
     document.addEventListener("pointerdown", () => {
-      if (!isMusicPlaying) {
+      if (!isMusicPlaying && !autoPlayTried) {
+        autoPlayTried = true;
         startMusic();
       }
     }, { once: true });
+    bgm.addEventListener("play", () => {
+      isMusicPlaying = true;
+      updateMusicButton();
+    });
+    bgm.addEventListener("pause", () => {
+      isMusicPlaying = false;
+      updateMusicButton();
+    });
     window.addEventListener("resize", resize);
     window.addEventListener("orientationchange", resize);
   </script>
