@@ -153,8 +153,8 @@
     }
 
     .card {
-      width: min(92vw, 440px);
-      padding: 34px 24px 30px;
+      width: min(92vw, 450px);
+      padding: 124px 24px 30px;
       border-radius: 28px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 250, 240, 0.22));
       border: 1px solid rgba(255, 255, 255, 0.34);
@@ -162,6 +162,49 @@
       backdrop-filter: blur(12px);
       text-align: center;
       animation: rise 1.2s ease both;
+      position: relative;
+      overflow: visible;
+    }
+
+    .photo-frame {
+      position: absolute;
+      left: 50%;
+      top: -70px;
+      transform: translateX(-50%) rotate(-2deg);
+      width: min(62vw, 220px);
+      padding: 10px 10px 18px;
+      border-radius: 26px;
+      background: rgba(255, 252, 246, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      box-shadow: 0 16px 40px rgba(146, 112, 87, 0.22);
+    }
+
+    .photo-frame::before {
+      content: "";
+      position: absolute;
+      inset: -10px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255, 246, 233, 0.56), rgba(255, 221, 228, 0.24));
+      z-index: -1;
+      filter: blur(16px);
+    }
+
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4.2;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 18px;
+      box-shadow: 0 10px 22px rgba(85, 67, 57, 0.12);
+    }
+
+    .photo-note {
+      margin-top: 12px;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-indent: 0.2em;
+      color: rgba(143, 105, 112, 0.82);
     }
 
     .eyebrow {
@@ -298,6 +341,10 @@
 
   <main class="content">
     <section class="card">
+      <div class="photo-frame">
+        <img src="assets/birthday-photo.jpg" alt="谢淑褀的照片">
+        <div class="photo-note">APRIL MEMORY</div>
+      </div>
       <p class="eyebrow">HAPPY BIRTHDAY</p>
       <h1>谢淑褀，生日快乐</h1>
       <p class="message">想把四月的晚风，
