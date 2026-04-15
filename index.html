@@ -154,7 +154,7 @@
 
     .card {
       width: min(92vw, 450px);
-      padding: 124px 24px 30px;
+      padding: 132px 24px 30px;
       border-radius: 28px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 250, 240, 0.22));
       border: 1px solid rgba(255, 255, 255, 0.34);
@@ -169,14 +169,15 @@
     .photo-frame {
       position: absolute;
       left: 50%;
-      top: -70px;
+      top: -82px;
       transform: translateX(-50%) rotate(-2deg);
       width: min(62vw, 220px);
       padding: 10px 10px 18px;
       border-radius: 26px;
-      background: rgba(255, 252, 246, 0.92);
-      border: 1px solid rgba(255, 255, 255, 0.76);
-      box-shadow: 0 16px 40px rgba(146, 112, 87, 0.22);
+      background: rgba(255, 252, 246, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      box-shadow: 0 14px 34px rgba(146, 112, 87, 0.16);
+      backdrop-filter: blur(4px);
     }
 
     .photo-frame::before {
@@ -197,6 +198,7 @@
       object-position: center center;
       border-radius: 18px;
       box-shadow: 0 10px 22px rgba(85, 67, 57, 0.12);
+      opacity: 0.82;
     }
 
     .photo-note {
@@ -204,11 +206,11 @@
       font-size: 12px;
       letter-spacing: 0.2em;
       text-indent: 0.2em;
-      color: rgba(143, 105, 112, 0.82);
+      color: rgba(143, 105, 112, 0.72);
     }
 
     .photo-caption {
-      margin: 12px 0 4px;
+      margin: 18px 0 4px;
       font-size: 13px;
       color: rgba(131, 95, 101, 0.84);
     }
@@ -245,11 +247,10 @@
 
     .hint {
       position: fixed;
-      left: 50%;
+      right: 18px;
       bottom: calc(env(safe-area-inset-bottom) + 14px);
-      transform: translateX(-50%);
       z-index: 3;
-      padding: 8px 14px;
+      padding: 10px 14px;
       border-radius: 999px;
       font-size: 12px;
       color: rgba(105, 78, 60, 0.88);
@@ -257,6 +258,8 @@
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.28);
       animation: pulse 2.4s ease-in-out infinite;
+      cursor: pointer;
+      user-select: none;
     }
 
     body.stage-card .card {
@@ -366,18 +369,24 @@
     </section>
   </main>
 
-  <div class="hint">在微信里打开，会有春风和蒲公英</div>
+  <button class="hint" id="musicToggle" type="button" aria-label="播放背景音乐">打开音乐</button>
 
   <script>
     const canvas = document.getElementById("dandelion");
     const ctx = canvas.getContext("2d");
     const intro = document.getElementById("intro");
+    const musicToggle = document.getElementById("musicToggle");
 
     let width = 0;
     let height = 0;
     let seeds = [];
     let sparkleOffset = 0;
     let floatStarted = false;
+    let audioContext = null;
+    let masterGain = null;
+    let isMusicPlaying = false;
+    let melodyTimer = null;
+    let chordTimer = null;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -506,6 +515,103 @@
       }
     }
 
+    function updateMusicButton() {
+      musicToggle.textContent = isMusicPlaying ? "暂停音乐" : "打开音乐";
+      musicToggle.setAttribute("aria-label", isMusicPlaying ? "暂停背景音乐" : "播放背景音乐");
+    }
+
+    function ensureAudio() {
+      if (audioContext) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+
+      audioContext = new AudioCtx();
+      masterGain = audioContext.createGain();
+      masterGain.gain.value = 0.05;
+      masterGain.connect(audioContext.destination);
+    }
+
+    function playTone(frequency, startTime, duration, type, volume) {
+      if (!audioContext || !masterGain) return;
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, startTime);
+      gainNode.gain.setValueAtTime(0.0001, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+      oscillator.connect(gainNode);
+      gainNode.connect(masterGain);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration + 0.06);
+    }
+
+    function scheduleMelody() {
+      if (!audioContext || !isMusicPlaying) return;
+      const now = audioContext.currentTime + 0.05;
+      const notes = [
+        523.25, 659.25, 783.99, 659.25,
+        698.46, 783.99, 880.0, 783.99
+      ];
+
+      notes.forEach((note, index) => {
+        playTone(note, now + index * 0.42, 0.36, "sine", 0.045);
+      });
+
+      melodyTimer = window.setTimeout(scheduleMelody, notes.length * 420);
+    }
+
+    function scheduleChords() {
+      if (!audioContext || !isMusicPlaying) return;
+      const now = audioContext.currentTime + 0.05;
+      const chords = [
+        [261.63, 329.63, 392.0],
+        [293.66, 369.99, 440.0],
+        [329.63, 415.3, 493.88],
+        [293.66, 369.99, 440.0]
+      ];
+
+      chords.forEach((chord, index) => {
+        const start = now + index * 1.68;
+        chord.forEach((note) => playTone(note, start, 1.2, "triangle", 0.018));
+      });
+
+      chordTimer = window.setTimeout(scheduleChords, chords.length * 1680);
+    }
+
+    async function startMusic() {
+      ensureAudio();
+      if (!audioContext || !masterGain || isMusicPlaying) return;
+      if (audioContext.state === "suspended") {
+        await audioContext.resume();
+      }
+      isMusicPlaying = true;
+      scheduleMelody();
+      scheduleChords();
+      updateMusicButton();
+    }
+
+    function stopMusic() {
+      isMusicPlaying = false;
+      if (melodyTimer) {
+        window.clearTimeout(melodyTimer);
+        melodyTimer = null;
+      }
+      if (chordTimer) {
+        window.clearTimeout(chordTimer);
+        chordTimer = null;
+      }
+      updateMusicButton();
+    }
+
+    async function toggleMusic() {
+      if (isMusicPlaying) {
+        stopMusic();
+      } else {
+        await startMusic();
+      }
+    }
+
     resize();
     animate();
     setTimeout(() => {
@@ -513,6 +619,13 @@
       document.body.classList.add("stage-card");
       intro.classList.add("hidden");
     }, 2600);
+    updateMusicButton();
+    musicToggle.addEventListener("click", toggleMusic);
+    document.addEventListener("pointerdown", () => {
+      if (!isMusicPlaying) {
+        startMusic();
+      }
+    }, { once: true });
     window.addEventListener("resize", resize);
     window.addEventListener("orientationchange", resize);
   </script>
