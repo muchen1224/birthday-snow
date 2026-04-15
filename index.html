@@ -7,12 +7,12 @@
   <title>生日快乐</title>
   <style>
     :root {
-      --bg-top: #14213d;
-      --bg-bottom: #2a4f7c;
+      --bg-top: #f7d7cf;
+      --bg-bottom: #f4f0d0;
       --glow: rgba(255, 255, 255, 0.18);
-      --text: #ffffff;
-      --subtext: rgba(255, 255, 255, 0.88);
-      --accent: #ffe6f0;
+      --text: #5f4b3b;
+      --subtext: rgba(95, 75, 59, 0.86);
+      --accent: #c86d7d;
     }
 
     * {
@@ -27,7 +27,9 @@
       height: 100%;
       overflow: hidden;
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 28%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
       color: var(--text);
     }
 
@@ -62,7 +64,7 @@
       height: 68vw;
       top: -10vw;
       right: -16vw;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 72%);
+      background: radial-gradient(circle, rgba(255, 246, 235, 0.52) 0%, rgba(255, 246, 235, 0) 72%);
       animation: drift 10s ease-in-out infinite alternate;
     }
 
@@ -71,7 +73,7 @@
       height: 48vw;
       left: -52vw;
       top: 48vh;
-      background: radial-gradient(circle, rgba(173, 216, 255, 0.2) 0%, rgba(173, 216, 255, 0) 72%);
+      background: radial-gradient(circle, rgba(255, 231, 186, 0.28) 0%, rgba(255, 231, 186, 0) 72%);
       animation: drift 12s ease-in-out infinite alternate-reverse;
     }
 
@@ -80,7 +82,7 @@
       height: 38vw;
       left: -18vw;
       top: 16vh;
-      background: radial-gradient(circle, rgba(255, 223, 235, 0.2) 0%, rgba(255, 223, 235, 0) 72%);
+      background: radial-gradient(circle, rgba(255, 203, 214, 0.32) 0%, rgba(255, 203, 214, 0) 72%);
       animation: drift 8s ease-in-out infinite alternate;
     }
 
@@ -92,7 +94,7 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: radial-gradient(circle at center, rgba(255, 245, 249, 0.12), rgba(20, 33, 61, 0.9) 65%);
+      background: radial-gradient(circle at center, rgba(255, 249, 239, 0.76), rgba(236, 197, 188, 0.92) 65%);
       transition: opacity 1s ease, visibility 1s ease;
       overflow: hidden;
     }
@@ -109,8 +111,8 @@
       line-height: 1.22;
       font-weight: 800;
       letter-spacing: 0.08em;
-      color: #fff7fb;
-      text-shadow: 0 0 28px rgba(255, 232, 242, 0.42), 0 0 60px rgba(255, 240, 247, 0.28);
+      color: #b4586b;
+      text-shadow: 0 0 22px rgba(255, 247, 231, 0.65), 0 0 48px rgba(255, 232, 214, 0.34);
       opacity: 0;
       transform: scale(0.9);
       animation: introPop 1.5s ease forwards;
@@ -125,7 +127,7 @@
       max-width: 420px;
       max-height: 420px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 239, 246, 0.42) 0%, rgba(255, 239, 246, 0.08) 38%, rgba(255, 239, 246, 0) 72%);
+      background: radial-gradient(circle, rgba(255, 247, 227, 0.62) 0%, rgba(255, 233, 205, 0.12) 38%, rgba(255, 239, 246, 0) 72%);
       filter: blur(12px);
       animation: haloPulse 2.8s ease-in-out infinite;
       opacity: 0.95;
@@ -134,7 +136,7 @@
     .intro-flash {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 18%, rgba(255, 255, 255, 0) 48%);
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.42) 0%, rgba(255, 248, 227, 0.12) 18%, rgba(255, 255, 255, 0) 48%);
       opacity: 0;
       animation: introFlash 1.6s ease-out 0.45s forwards;
     }
@@ -154,9 +156,9 @@
       width: min(92vw, 440px);
       padding: 34px 24px 30px;
       border-radius: 28px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 250, 240, 0.22));
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      box-shadow: 0 20px 60px rgba(146, 112, 87, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(12px);
       text-align: center;
       animation: rise 1.2s ease both;
@@ -167,7 +169,7 @@
       letter-spacing: 0.3em;
       text-indent: 0.3em;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.75);
+      color: rgba(123, 95, 82, 0.72);
     }
 
     h1 {
@@ -175,7 +177,7 @@
       font-size: clamp(32px, 8vw, 46px);
       line-height: 1.08;
       color: var(--accent);
-      text-shadow: 0 0 18px rgba(255, 238, 246, 0.32);
+      text-shadow: 0 0 16px rgba(255, 243, 233, 0.52);
     }
 
     .message {
@@ -189,7 +191,7 @@
     .footer {
       margin-top: 20px;
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.62);
+      color: rgba(115, 88, 71, 0.7);
     }
 
     .hint {
@@ -201,10 +203,10 @@
       padding: 8px 14px;
       border-radius: 999px;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.88);
-      background: rgba(11, 20, 37, 0.28);
+      color: rgba(105, 78, 60, 0.88);
+      background: rgba(255, 249, 238, 0.42);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
       animation: pulse 2.4s ease-in-out infinite;
     }
 
@@ -287,7 +289,7 @@
 </head>
 <body>
   <div class="aurora"></div>
-  <canvas id="snow"></canvas>
+  <canvas id="dandelion"></canvas>
   <section class="intro" id="intro">
     <div class="intro-flash"></div>
     <div class="intro-glow"></div>
@@ -298,28 +300,29 @@
     <section class="card">
       <p class="eyebrow">HAPPY BIRTHDAY</p>
       <h1>谢淑褀，生日快乐</h1>
-      <p class="message">想把整个冬天最温柔的雪
-都送到你面前。
+      <p class="message">想把四月最轻的风，
+和春天最温柔的晴朗，
+一起送到你面前。
 
-今天的每一片雪花，
+今天飘过你身边的每一朵蒲公英，
 都在替我说一遍:
 我好喜欢你。</p>
-      <div class="footer">点开这一页的时候，雪会一直为你落下。</div>
+      <div class="footer">点开这一页的时候，春天也会慢慢朝你飞过来。</div>
     </section>
   </main>
 
-  <div class="hint">在微信里打开效果更好</div>
+  <div class="hint">在微信里打开，会有春风和蒲公英</div>
 
   <script>
-    const canvas = document.getElementById("snow");
+    const canvas = document.getElementById("dandelion");
     const ctx = canvas.getContext("2d");
     const intro = document.getElementById("intro");
 
     let width = 0;
     let height = 0;
-    let flakes = [];
+    let seeds = [];
     let sparkleOffset = 0;
-    let snowStarted = false;
+    let floatStarted = false;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -331,43 +334,78 @@
       canvas.style.height = height + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.max(130, Math.floor(width * height / 5200));
-      flakes = Array.from({ length: count }, createFlake);
+      const count = Math.max(42, Math.floor(width * height / 14000));
+      seeds = Array.from({ length: count }, createSeed);
     }
 
     function random(min, max) {
       return Math.random() * (max - min) + min;
     }
 
-    function createFlake() {
+    function createSeed() {
       return {
-        x: random(0, width),
-        y: random(-height, height),
-        r: random(1.1, 4.8),
-        speedY: random(0.55, 2.1),
-        speedX: random(-0.45, 0.45),
-        wobble: random(0.005, 0.02),
-        alpha: random(0.45, 0.95),
-        blur: random(0, 1),
-        swing: random(0, Math.PI * 2)
+        x: random(-width * 0.2, width),
+        y: random(-height * 0.15, height),
+        size: random(0.7, 1.35),
+        speedX: random(0.45, 1.3),
+        speedY: random(-0.06, 0.4),
+        drift: random(0.008, 0.022),
+        alpha: random(0.5, 0.9),
+        swing: random(0, Math.PI * 2),
+        rotate: random(0, Math.PI * 2),
+        spin: random(-0.01, 0.01)
       };
     }
 
-    function drawFlake(flake) {
-      const glow = flake.r * 2.6;
-      ctx.beginPath();
-      ctx.fillStyle = "rgba(255,255,255," + (flake.alpha * 0.12) + ")";
-      ctx.arc(flake.x, flake.y, glow, 0, Math.PI * 2);
-      ctx.fill();
+    function drawSeed(seed) {
+      const puff = 11 * seed.size;
+      const stem = 15 * seed.size;
+      const featherCount = 10;
+
+      ctx.save();
+      ctx.translate(seed.x, seed.y);
+      ctx.rotate(seed.rotate);
 
       ctx.beginPath();
-      ctx.fillStyle = "rgba(255,255,255," + flake.alpha + ")";
-      ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,248,238," + (seed.alpha * 0.18) + ")";
+      ctx.arc(0, 0, puff * 1.15, 0, Math.PI * 2);
       ctx.fill();
+
+      ctx.strokeStyle = "rgba(164, 142, 112," + (seed.alpha * 0.9) + ")";
+      ctx.lineWidth = 1.2 * seed.size;
+      ctx.beginPath();
+      ctx.moveTo(0, 1);
+      ctx.lineTo(0, stem);
+      ctx.stroke();
+
+      for (let i = 0; i < featherCount; i++) {
+        const angle = (-Math.PI / 2) + (i / (featherCount - 1) - 0.5) * 1.6;
+        const x = Math.cos(angle) * puff;
+        const y = Math.sin(angle) * puff;
+
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255,255,255," + seed.alpha + ")";
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, 0);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255,255,255," + (seed.alpha * 0.9) + ")";
+        ctx.arc(x, y, 1.4 * seed.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.fillStyle = "rgba(206, 188, 155," + seed.alpha + ")";
+      ctx.arc(0, 0, 1.8 * seed.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
     }
 
     function animate() {
-      if (!snowStarted) {
+      if (!floatStarted) {
         requestAnimationFrame(animate);
         return;
       }
@@ -375,20 +413,19 @@
       ctx.clearRect(0, 0, width, height);
       sparkleOffset += 0.01;
 
-      for (const flake of flakes) {
-        flake.swing += flake.wobble;
-        flake.x += flake.speedX + Math.sin(flake.swing) * 0.45;
-        flake.y += flake.speedY;
+      for (const seed of seeds) {
+        seed.swing += seed.drift;
+        seed.rotate += seed.spin;
+        seed.x += seed.speedX + Math.sin(seed.swing) * 0.55;
+        seed.y += seed.speedY + Math.cos(seed.swing * 0.8) * 0.18;
 
-        if (flake.y - flake.r > height) {
-          flake.y = -10;
-          flake.x = random(0, width);
+        if (seed.x > width + 40 || seed.y > height + 30 || seed.y < -40) {
+          seed.x = random(-60, -10);
+          seed.y = random(0, height);
+          seed.rotate = random(0, Math.PI * 2);
         }
 
-        if (flake.x < -10) flake.x = width + 10;
-        if (flake.x > width + 10) flake.x = -10;
-
-        drawFlake(flake);
+        drawSeed(seed);
       }
 
       drawGlow();
@@ -397,8 +434,8 @@
 
     function drawGlow() {
       const gradient = ctx.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, "rgba(255,255,255,0.08)");
-      gradient.addColorStop(0.4, "rgba(255,255,255,0.02)");
+      gradient.addColorStop(0, "rgba(255,255,255,0.1)");
+      gradient.addColorStop(0.4, "rgba(255,241,224,0.06)");
       gradient.addColorStop(1, "rgba(255,255,255,0)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
@@ -408,7 +445,7 @@
         const x = ((width / 8) * i + Math.sin(sparkleOffset + i) * 20 + width) % width;
         const y = 80 + Math.cos(sparkleOffset * 1.4 + i) * 22;
         ctx.beginPath();
-        ctx.fillStyle = "rgba(255,255,255,0.35)";
+        ctx.fillStyle = "rgba(255,245,231,0.45)";
         ctx.arc(x, y, size, 0, Math.PI * 2);
         ctx.fill();
       }
@@ -417,7 +454,7 @@
     resize();
     animate();
     setTimeout(() => {
-      snowStarted = true;
+      floatStarted = true;
       document.body.classList.add("stage-card");
       intro.classList.add("hidden");
     }, 2600);
