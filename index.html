@@ -363,9 +363,6 @@
     </section>
   </main>
 
-  <audio id="bgm" loop preload="auto">
-    <source src="assets/bgm.mp3" type="audio/mpeg">
-  </audio>
   <button class="hint" id="musicToggle" type="button" aria-label="播放背景音乐">打开音乐</button>
 
   <script>
@@ -373,15 +370,18 @@
     const ctx = canvas.getContext("2d");
     const intro = document.getElementById("intro");
     const musicToggle = document.getElementById("musicToggle");
-    const bgm = document.getElementById("bgm");
 
     let width = 0;
     let height = 0;
     let seeds = [];
     let sparkleOffset = 0;
     let floatStarted = false;
+    let audioContext = null;
+    let masterGain = null;
     let isMusicPlaying = false;
     let autoPlayTried = false;
+    let melodyTimer = null;
+    let chordTimer = null;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -515,25 +515,90 @@
       musicToggle.setAttribute("aria-label", isMusicPlaying ? "暂停背景音乐" : "播放背景音乐");
     }
 
+    function ensureAudio() {
+      if (audioContext) return true;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return false;
+      audioContext = new AudioCtx();
+      masterGain = audioContext.createGain();
+      masterGain.gain.value = 0.04;
+      masterGain.connect(audioContext.destination);
+      return true;
+    }
+
+    function playTone(frequency, startTime, duration, type, volume) {
+      if (!audioContext || !masterGain) return;
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, startTime);
+
+      gainNode.gain.setValueAtTime(0.0001, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.08);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(masterGain);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration + 0.1);
+    }
+
+    function scheduleMelody() {
+      if (!audioContext || !isMusicPlaying) return;
+      const now = audioContext.currentTime + 0.05;
+      const notes = [
+        659.25, 783.99, 880.0, 783.99,
+        698.46, 659.25, 587.33, 659.25
+      ];
+
+      notes.forEach((note, index) => {
+        playTone(note, now + index * 0.48, 0.38, "sine", 0.032);
+      });
+
+      melodyTimer = window.setTimeout(scheduleMelody, notes.length * 480);
+    }
+
+    function scheduleChords() {
+      if (!audioContext || !isMusicPlaying) return;
+      const now = audioContext.currentTime + 0.05;
+      const chords = [
+        [261.63, 329.63, 392.0],
+        [220.0, 329.63, 392.0],
+        [246.94, 329.63, 440.0],
+        [196.0, 293.66, 392.0]
+      ];
+
+      chords.forEach((chord, index) => {
+        const start = now + index * 1.92;
+        chord.forEach((note) => playTone(note, start, 1.5, "triangle", 0.014));
+      });
+
+      chordTimer = window.setTimeout(scheduleChords, chords.length * 1920);
+    }
+
     async function startMusic() {
       if (isMusicPlaying) return;
-      if (!bgm || !bgm.querySelector("source") || !bgm.querySelector("source").getAttribute("src")) return;
-      try {
-        bgm.volume = 0.45;
-        await bgm.play();
-        isMusicPlaying = true;
-        updateMusicButton();
-      } catch (error) {
-        isMusicPlaying = false;
-        updateMusicButton();
+      if (!ensureAudio()) return;
+      if (audioContext.state === "suspended") {
+        await audioContext.resume();
       }
+      isMusicPlaying = true;
+      scheduleMelody();
+      scheduleChords();
+      updateMusicButton();
     }
 
     function stopMusic() {
-      if (!bgm) return;
-      bgm.pause();
-      bgm.currentTime = bgm.currentTime || 0;
       isMusicPlaying = false;
+      if (melodyTimer) {
+        window.clearTimeout(melodyTimer);
+        melodyTimer = null;
+      }
+      if (chordTimer) {
+        window.clearTimeout(chordTimer);
+        chordTimer = null;
+      }
       updateMusicButton();
     }
 
@@ -554,20 +619,13 @@
     }, 2600);
     updateMusicButton();
     musicToggle.addEventListener("click", toggleMusic);
-    document.addEventListener("pointerdown", () => {
+    document.addEventListener("pointerdown", (event) => {
+      if (event.target === musicToggle) return;
       if (!isMusicPlaying && !autoPlayTried) {
         autoPlayTried = true;
         startMusic();
       }
     }, { once: true });
-    bgm.addEventListener("play", () => {
-      isMusicPlaying = true;
-      updateMusicButton();
-    });
-    bgm.addEventListener("pause", () => {
-      isMusicPlaying = false;
-      updateMusicButton();
-    });
     window.addEventListener("resize", resize);
     window.addEventListener("orientationchange", resize);
   </script>
